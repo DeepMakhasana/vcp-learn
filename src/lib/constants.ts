@@ -21,4 +21,4 @@ export const clientEndpoints = {
 };
 
 export const CLIENT_ID = 4;
-export const MAIN_COURSES_PAGE = "http://localhost:3000";
+export const MAIN_COURSES_PAGE = "vcp-client.vercel.app";
