@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { sendVerifyEmailPayload, sendVerifyEmailResponse } from "@/types/auth";
 import { sendForgotPasswordVerifyOtpEmail } from "@/api/auth";
-import { IIsEmailVerify } from "./Register";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { forgotPasswordValidationSchema } from "@/schema/auth";
@@ -18,7 +17,10 @@ import InputOTPForm from "@/components/core/auth/InputOTPForm";
 import { toast } from "@/hooks/use-toast";
 
 const ForgotPassword = () => {
-  const [isEmailVerified, setIsEmailVerified] = useState<IIsEmailVerify>({ email: "", isVerified: false });
+  const [isEmailVerified, setIsEmailVerified] = useState<{ email: string; isVerified: boolean }>({
+    email: "",
+    isVerified: false,
+  });
 
   const form = useForm<z.infer<typeof forgotPasswordValidationSchema>>({
     resolver: zodResolver(forgotPasswordValidationSchema),
