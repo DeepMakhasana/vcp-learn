@@ -68,7 +68,7 @@ const Layout = () => {
             <div className="flex min-h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
               <a href={MAIN_COURSES_PAGE} className="flex items-center gap-2 font-semibold">
                 <Package2 className="h-6 w-6" />
-                <span className="font-sans font-medium">CAD Center</span>
+                <span className="font-sans font-medium">Param CAD Center</span>
               </a>
             </div>
             {path.pathname.includes("/learn/") && course ? (
@@ -79,7 +79,7 @@ const Layout = () => {
           </div>
         </div>
         <div className="flex flex-col">
-          <header className="flex min-h-14 justify-between items-center gap-2 sm:gap-4 border-b bg-muted/40 px-4 lg:sticky lg:top-0 lg:h-[60px] lg:px-6">
+          <header className="flex min-h-14 justify-between items-center z-10 gap-2 sm:gap-4 border-b bg-muted/40 px-4 lg:sticky lg:top-0 lg:h-[60px] lg:px-6">
             {path.pathname.includes("/learn/") && course ? (
               <CourseLearnSMSideBar course={course} />
             ) : (
@@ -90,9 +90,7 @@ const Layout = () => {
                 <Button variant={"outline"} size={"icon"} className="min-w-8" onClick={() => navigate(-1)}>
                   <ChevronLeft />
                 </Button>
-                <p className="line-clamp-1 font-medium">
-                  {course?.title}Use React Query to cache progress for better performance
-                </p>
+                <p className="line-clamp-1 font-medium">{course?.title}</p>
               </div>
             )}
 

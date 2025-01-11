@@ -96,7 +96,9 @@ function InputOTPForm({ isEmailVerified, setIsEmailVerified, isRegister }: IInpu
           )}
         />
 
-        <Button type="submit">Verify</Button>
+        <Button disabled={mutation.isPending} type="submit">
+          {mutation.isPending ? "Verify..." : "Verify"}
+        </Button>
       </form>
     </Form>
   );

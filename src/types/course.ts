@@ -166,3 +166,11 @@ export interface IPrivateTaskResponse {
   fileName: string;
   url: string;
 }
+
+export interface ICertificatePayload {
+  purchaseId: number;
+}
+
+export interface ICertificateResponse {
+  message: string;
+}

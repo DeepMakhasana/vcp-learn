@@ -1,10 +1,6 @@
 import axiosInstance from "@/lib/axiosInstance";
 import { endpoints } from ".";
 import {
-  loginPayload,
-  loginResponse,
-  registerPayload,
-  registerResponse,
   resetPayload,
   resetResponse,
   sendVerifyEmailPayload,
@@ -35,16 +31,6 @@ export async function verifyRegisterOtp(payload: { email: string; otp: string })
   return data;
 }
 
-export async function creatorRegister(payload: registerPayload): Promise<registerResponse> {
-  const { data } = await axiosInstance.post(endpoints.auth.register, payload);
-  return data;
-}
-
-export async function creatorLogin(payload: loginPayload): Promise<loginResponse> {
-  const { data } = await axiosInstance.post(endpoints.auth.login, payload);
-  return data;
-}
-
 export async function creatorPasswordReset(payload: resetPayload): Promise<resetResponse> {
   const { data } = await axiosInstance.post(endpoints.auth.resetPassword, payload);
   return data;
@@ -65,5 +51,10 @@ export const userRegister = async (payload: userRegisterPayload): Promise<userRe
 // Function to make the POST request for user register
 export const userLogin = async (payload: userLoginPayload): Promise<userRegisterResponse> => {
   const { data } = await axiosInstance.post("/auth/user/login", payload);
+  return data;
+};
+
+export const userLogout = async (): Promise<{ message: string }> => {
+  const { data } = await axiosInstance.post("/auth/user/logout");
   return data;
 };

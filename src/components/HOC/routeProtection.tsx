@@ -1,7 +1,7 @@
 import useAuthContext from "@/context/auth/useAuthContext";
 import { Loader2 } from "lucide-react";
 import { useLayoutEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const routeProtection = <P extends object>(
   WrappedComponent: React.ComponentType<P>,
@@ -9,14 +9,20 @@ const routeProtection = <P extends object>(
 ): React.FC<P> => {
   const ProtectedComponent = (props: P) => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { isAuthenticated, isLoading } = useAuthContext(); // Replace with your auth logic
-    console.log("protect route: ", isAuthenticated);
+    console.log("----");
+    console.log("protect route: ", location);
 
     useLayoutEffect(() => {
       if (!isLoading && !isAuthenticated) {
-        navigate(navigateToRegister ? "/register" : "/");
+        if (location.pathname.includes("checkout")) {
+          navigate("/register", { state: { previous: location.pathname } });
+        } else {
+          navigate(navigateToRegister ? "/register" : "/");
+        }
       }
-    }, [isAuthenticated, isLoading, navigate]);
+    }, [isAuthenticated, isLoading, navigate, location.pathname]);
 
     if (isLoading) {
       return (

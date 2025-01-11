@@ -1,18 +1,26 @@
-import { createLessonProgress } from "@/api/course";
+import { createLessonProgress, sendCourseCertificate } from "@/api/course";
 import { Button } from "@/components/ui/button";
 import useLessonNavigationContext from "@/context/lessonNavigation/useLessonNavigationContext";
 import { toast } from "@/hooks/use-toast";
-import { ICreateLessonProgressPayload, ICreateLessonProgressResponse } from "@/types/course";
+import {
+  ICertificatePayload,
+  ICertificateResponse,
+  ICreateLessonProgressPayload,
+  ICreateLessonProgressResponse,
+} from "@/types/course";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import LearnVideo from "@/components/core/course-learn/LearnVideo";
 import LearnTask from "@/components/core/course-learn/LearnTask";
 import PublicVideoPlayer from "@/components/core/course-learn/PublicVideoPlayer";
+import { useState } from "react";
+import CourseCompletedAlert from "@/components/core/CourseCompletedAlert";
 
 const LearnCourse = () => {
   const { slug, purchaseId } = useParams();
   const { currentLesson, nextLesson, previousLesson, setCurrentLesson } = useLessonNavigationContext();
   const queryClient = useQueryClient();
+  const [isCertificateRequest, setIsCertificateRequest] = useState(false);
 
   // mutation for add progress in lesson
   const { mutate: nextMutate, isPending: nextPending } = useMutation<
@@ -68,8 +76,37 @@ const LearnCourse = () => {
     }
   };
 
+  // send course completion certificate
+  const { mutate: certificateRequestMutation, isPending: certificateRequestPending } = useMutation<
+    ICertificateResponse,
+    Error,
+    ICertificatePayload
+  >({
+    mutationFn: sendCourseCertificate,
+    onSuccess: (data) => {
+      setIsCertificateRequest(true);
+      toast({
+        title: "Certificate request:",
+        description: data.message,
+      });
+    },
+    onError: (error: any) => {
+      console.log("error", error);
+      toast({
+        title: "warning:",
+        description: error?.response?.data?.message || error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleCertificateRequest = () => {
+    certificateRequestMutation({ purchaseId: Number(purchaseId) });
+  };
+
   return (
-    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+    <main className={`flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:px-6 ${currentLesson?.tasks ? "lg:py-6" : "lg:py-2"}`}>
+      <CourseCompletedAlert isOpen={isCertificateRequest} setIsOpen={setIsCertificateRequest} />
       {currentLesson?.isVideo ? (
         <div className="bg-slate-400">
           {currentLesson?.public?.url ? (
@@ -104,7 +141,9 @@ const LearnCourse = () => {
               {nextPending ? "Loading..." : "Next"}
             </Button>
           ) : (
-            <Button variant={"default"}>Completed</Button>
+            <Button variant={"default"} disabled={certificateRequestPending} onClick={handleCertificateRequest}>
+              {certificateRequestPending ? "Certificate requesting..." : "Complete"}
+            </Button>
           )}
         </div>
       </div>

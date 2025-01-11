@@ -95,7 +95,7 @@ const LoginForm = () => {
             Forgot password
           </Link>
         </div>
-        <Button type="submit" className="w-full">
+        <Button disabled={loginMutation.isPending} type="submit" className="w-full">
           {loginMutation.isPending ? "Login..." : "Login"}
         </Button>
       </form>

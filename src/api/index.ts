@@ -10,6 +10,7 @@ export const endpoints = {
   },
   course: {
     create: "/course",
+    certificate: "/course/certificate",
   },
   learn: {
     main: "/learn",

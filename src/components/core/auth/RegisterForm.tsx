@@ -78,7 +78,6 @@ const RegisterForm = () => {
         description: data.message,
       });
       // window.location.href = MAIN_COURSES_PAGE;
-      // navigate("/");
     },
     onError: (error: any) => {
       console.log("error", error);
@@ -228,7 +227,7 @@ const RegisterForm = () => {
               )}
             />
           </div>
-          <Button type="submit" className="w-full">
+          <Button disabled={RegisterMutation.isPending} type="submit" className="w-full">
             {RegisterMutation.isPending ? "Creating..." : "Create an account"}
           </Button>
         </form>

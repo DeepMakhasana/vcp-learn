@@ -79,8 +79,8 @@ const VideoPlayer = ({ source }: { source: string | undefined }) => {
   }
 
   return (
-    <div className="w-full">
-      <video ref={videoRef} className="plyr-react plyr w-full" controls />
+    <div className="w-full h-auto">
+      <video ref={videoRef} className="plyr-react plyr w-full h-auto" controls />
     </div>
   );
 };

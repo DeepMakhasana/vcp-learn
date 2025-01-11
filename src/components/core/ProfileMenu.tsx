@@ -1,4 +1,4 @@
-import { CircleUser } from "lucide-react";
+import { CircleUser, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -9,6 +9,9 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { User } from "@/types/auth";
+import { useMutation } from "@tanstack/react-query";
+import { userLogout } from "@/api/auth";
+import { toast } from "@/hooks/use-toast";
 
 interface IProfileMenuProps {
   logout: () => void;
@@ -16,6 +19,26 @@ interface IProfileMenuProps {
 }
 
 const ProfileMenu = ({ logout, user }: IProfileMenuProps) => {
+  // mutation for logout
+  const { mutate, isPending } = useMutation<{ message: string }, Error>({
+    mutationFn: userLogout,
+    onSuccess: (data) => {
+      toast({
+        title: "Success:",
+        description: data.message,
+      });
+      logout();
+    },
+    onError: (error: any) => {
+      console.log("error", error);
+      toast({
+        title: "warning:",
+        description: error?.response.data.message || error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   return (
     <div>
       <DropdownMenu>
@@ -31,7 +54,9 @@ const ProfileMenu = ({ logout, user }: IProfileMenuProps) => {
           <DropdownMenuItem>Welcome, {user?.name}!</DropdownMenuItem>
           {/* <DropdownMenuItem>Support</DropdownMenuItem> */}
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => mutate()} className="flex gap-2 items-center">
+            {isPending && <Loader2 className="animate-spin" />} Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

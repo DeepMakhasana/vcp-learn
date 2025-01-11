@@ -2,6 +2,8 @@ import axiosInstance from "@/lib/axiosInstance";
 import { endpoints } from ".";
 import {
   CourseCheckoutType,
+  ICertificatePayload,
+  ICertificateResponse,
   ICourseFullDetail,
   ICourseFullDetailResponse,
   ICreateLessonProgressPayload,
@@ -65,5 +67,10 @@ export async function getLearningProgress(payload: {
   courseId: number;
 }): Promise<{ progressPercentage: number }> {
   const { data } = await axiosInstance.get(`${endpoints.learn.process}/${payload.purchaseId}/${payload.courseId}`);
+  return data;
+}
+
+export async function sendCourseCertificate(payload: ICertificatePayload): Promise<ICertificateResponse> {
+  const { data } = await axiosInstance.post(endpoints.course.certificate, payload);
   return data;
 }

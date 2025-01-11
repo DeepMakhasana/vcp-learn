@@ -14,8 +14,12 @@ const publicRoute = <P extends object>(WrappedComponent: React.ComponentType<P>)
     useLayoutEffect(() => {
       if (isAuthenticated && !isLoading) {
         if (allowPath.includes(path.pathname)) {
-          console.log("enter--");
-          navigate("/dashboard");
+          console.log("enter--", path);
+          if (path?.state?.previous) {
+            navigate(path?.state?.previous);
+          } else {
+            navigate("/dashboard");
+          }
         }
       }
     }, [isAuthenticated, isLoading, navigate, path]);
