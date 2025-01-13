@@ -28,7 +28,7 @@ const VideoPlayer = ({ source }: { source: string | undefined }) => {
 
         defaultOptions.controls = [
           "play-large", // The large play button in the center
-          "restart", // Restart playback
+          // "restart", // Restart playback
           "rewind", // Rewind by the seek time (default 10 seconds)
           "play", // Play/pause playback
           "fast-forward", // Fast forward by the seek time (default 10 seconds)
@@ -36,8 +36,8 @@ const VideoPlayer = ({ source }: { source: string | undefined }) => {
           "current-time", // The current time of playback
           "duration", // The full duration of the media
           "mute", // Toggle mute
-          "volume", // Volume control
-          "captions", // Toggle captions
+          // "volume", // Volume control
+          // "captions", // Toggle captions
           "settings", // Settings menu
           "airplay", // Airplay (currently Safari only)
           "fullscreen", // Toggle fullscreen

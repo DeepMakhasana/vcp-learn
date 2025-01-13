@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getCourseBySlug, purchaseCourse } from "@/api/course";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,11 +10,11 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { toast } from "@/hooks/use-toast";
 import { courseImageBaseUrl } from "@/lib/constants";
 import NotFound from "./NotFound";
-import routeProtection from "@/components/HOC/routeProtection";
 
 const Checkout = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, user } = useAuthContext();
 
   const {
@@ -25,7 +25,7 @@ const Checkout = () => {
   } = useQuery<CourseCheckoutType, Error>({
     queryKey: ["course", { slug }],
     queryFn: () => getCourseBySlug(slug as string),
-    enabled: !!slug && isAuthenticated,
+    enabled: !!slug,
   });
 
   // mutation for checkout
@@ -49,6 +49,19 @@ const Checkout = () => {
       });
     },
   });
+
+  function handleCoursePurchase() {
+    if (isAuthenticated) {
+      mutate({
+        userId: Number(user?.id),
+        courseId: course?.id as number,
+        price: course?.price as number,
+        duration: course?.duration as number,
+      });
+    } else {
+      navigate("/register", { state: { previous: location.pathname } });
+    }
+  }
 
   if (dataLoafing) {
     return (
@@ -119,18 +132,7 @@ const Checkout = () => {
                 </TableRow>
               </TableFooter>
             </Table>
-            <Button
-              className="block w-full mt-4"
-              onClick={() =>
-                mutate({
-                  userId: Number(user?.id),
-                  courseId: course.id,
-                  price: course.price,
-                  duration: course.duration,
-                })
-              }
-              disabled={isPending}
-            >
+            <Button className="block w-full mt-4" onClick={handleCoursePurchase} disabled={isPending}>
               {isPending ? "Order process.." : "Conform Payment"}
             </Button>
           </div>
@@ -140,4 +142,4 @@ const Checkout = () => {
   );
 };
 
-export default routeProtection(Checkout, true);
+export default Checkout;

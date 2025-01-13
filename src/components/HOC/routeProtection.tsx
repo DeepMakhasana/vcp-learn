@@ -16,13 +16,9 @@ const routeProtection = <P extends object>(
 
     useLayoutEffect(() => {
       if (!isLoading && !isAuthenticated) {
-        if (location.pathname.includes("checkout")) {
-          navigate("/register", { state: { previous: location.pathname } });
-        } else {
-          navigate(navigateToRegister ? "/register" : "/");
-        }
+        navigate(navigateToRegister ? "/register" : "/");
       }
-    }, [isAuthenticated, isLoading, navigate, location.pathname]);
+    }, [isAuthenticated, isLoading, navigate]);
 
     if (isLoading) {
       return (

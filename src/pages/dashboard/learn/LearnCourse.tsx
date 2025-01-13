@@ -105,7 +105,9 @@ const LearnCourse = () => {
   };
 
   return (
-    <main className={`flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:px-6 ${currentLesson?.tasks ? "lg:py-6" : "lg:py-2"}`}>
+    <main
+      className={`flex flex-1 flex-col gap-4 py-4 lg:gap-6 lg:px-6 ${currentLesson?.tasks ? "lg:py-6" : "lg:py-0"}`}
+    >
       <CourseCompletedAlert isOpen={isCertificateRequest} setIsOpen={setIsCertificateRequest} />
       {currentLesson?.isVideo ? (
         <div className="bg-slate-400">
@@ -124,24 +126,29 @@ const LearnCourse = () => {
       )}
 
       {/* lesson navigation */}
-      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+      <div className="flex flex-col px-3 lg:px-0 lg:flex-row lg:justify-between lg:items-center gap-4">
         <p>{currentLesson?.title}</p>
         <div className="flex justify-between items-center gap-4">
           {previousLesson?.id ? (
-            <Button variant={"outline"} onClick={() => setCurrentLesson(previousLesson?.id)}>
+            <Button className="px-6" variant={"outline"} onClick={() => setCurrentLesson(previousLesson?.id)}>
               Previous
             </Button>
           ) : (
-            <Button variant={"outline"} disabled>
+            <Button className="px-6" variant={"outline"} disabled>
               Previous
             </Button>
           )}
           {nextLesson?.id ? (
-            <Button variant={"default"} disabled={nextPending} onClick={nextLessonHandle}>
+            <Button className="px-6" variant={"default"} disabled={nextPending} onClick={nextLessonHandle}>
               {nextPending ? "Loading..." : "Next"}
             </Button>
           ) : (
-            <Button variant={"default"} disabled={certificateRequestPending} onClick={handleCertificateRequest}>
+            <Button
+              className="px-6"
+              variant={"default"}
+              disabled={certificateRequestPending}
+              onClick={handleCertificateRequest}
+            >
               {certificateRequestPending ? "Certificate requesting..." : "Complete"}
             </Button>
           )}
