@@ -40,7 +40,7 @@ const LearnTask = () => {
   const lessonId = currentLesson?.id as number;
   const { data: taskData, isLoading: taskLoading } = useQuery<IPrivateTaskResponse[], Error>({
     queryKey: ["task", { lessonId }],
-    queryFn: () => getPrivateTaskUrl({ purchaseId: Number(purchaseId), lessonId }),
+    queryFn: () => getPrivateTaskUrl({ purchaseId: String(purchaseId), lessonId }),
     enabled: !!slug && !!purchaseId && !!lessonId,
   });
 

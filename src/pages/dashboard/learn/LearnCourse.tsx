@@ -31,7 +31,7 @@ const LearnCourse = () => {
     mutationFn: createLessonProgress,
     onSuccess: (data) => {
       // Update the query data
-      queryClient.setQueryData(["learn", { slug }], (oldData: any) => {
+      queryClient.setQueryData(["learn", { slug, purchaseId }], (oldData: any) => {
         if (!oldData) return oldData; // Return if the data doesn't exist
 
         // Deep clone the old data to prevent mutations
@@ -68,7 +68,7 @@ const LearnCourse = () => {
     const currentId = currentLesson?.id;
     const nextId = nextLesson?.id;
     if (currentId && !currentLesson?.progresses.length) {
-      nextMutate({ purchaseId: Number(purchaseId), lessonId: currentId });
+      nextMutate({ purchaseId: String(purchaseId), lessonId: currentId });
     } else {
       if (nextId) {
         setCurrentLesson(nextId);
@@ -101,12 +101,14 @@ const LearnCourse = () => {
   });
 
   const handleCertificateRequest = () => {
-    certificateRequestMutation({ purchaseId: Number(purchaseId) });
+    certificateRequestMutation({ purchaseId: String(purchaseId) });
   };
 
   return (
     <main
-      className={`flex flex-1 flex-col gap-4 py-4 lg:gap-6 lg:px-6 ${currentLesson?.tasks ? "lg:py-6" : "lg:py-0"}`}
+      className={`flex flex-1 flex-col gap-4 py-4 lg:gap-6 lg:px-6 ${
+        currentLesson?.tasks ? "px-6 lg:py-6" : "lg:py-0"
+      }`}
     >
       <CourseCompletedAlert isOpen={isCertificateRequest} setIsOpen={setIsCertificateRequest} />
       {currentLesson?.isVideo ? (

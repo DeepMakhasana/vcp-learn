@@ -14,6 +14,7 @@ import {
   IPurchaseCoursePayload,
   IPurchaseCourseResponse,
   IPurchaseCoursesResponse,
+  IPurchaseVerifyCoursePayload,
 } from "@/types/course";
 import { ICourseLearnResponse } from "@/types/learn";
 
@@ -28,7 +29,12 @@ export async function getCourseBySlug(slug: string): Promise<CourseCheckoutType>
 }
 
 export async function purchaseCourse(payload: IPurchaseCoursePayload): Promise<IPurchaseCourseResponse> {
-  const { data } = await axiosInstance.post(endpoints.purchase.main, payload);
+  const { data } = await axiosInstance.post(`${endpoints.purchase.main}/order`, payload);
+  return data;
+}
+
+export async function purchaseVerifyCourse(payload: IPurchaseVerifyCoursePayload): Promise<IPurchaseCourseResponse> {
+  const { data } = await axiosInstance.post(`${endpoints.purchase.main}/verify`, payload);
   return data;
 }
 
@@ -39,7 +45,7 @@ export async function getPurchaseCourses(): Promise<IPurchaseCoursesResponse[]> 
 
 export async function getPurchasedLearnCourse(payload: {
   slag: string;
-  purchaseId: number;
+  purchaseId: string;
 }): Promise<ICourseLearnResponse> {
   const { data } = await axiosInstance.get(`${endpoints.learn.main}/${payload.slag}/${payload.purchaseId}`);
   return data;
@@ -63,7 +69,7 @@ export async function getPrivateTaskUrl(payload: IPrivateResourcePayload): Promi
 }
 
 export async function getLearningProgress(payload: {
-  purchaseId: number;
+  purchaseId: string;
   courseId: number;
 }): Promise<{ progressPercentage: number }> {
   const { data } = await axiosInstance.get(`${endpoints.learn.process}/${payload.purchaseId}/${payload.courseId}`);

@@ -1,11 +1,11 @@
 import { getLearningProgress } from "@/api/course";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 
-const CourseProgress = ({ purchaseId, courseId }: { purchaseId: number; courseId: number }) => {
+const CourseProgress = ({ purchaseId, courseId }: { purchaseId: string; courseId: number }) => {
   const { data, isLoading, isError, error } = useQuery<{ progressPercentage: number }, Error>({
-    queryKey: ["courseProgress", { courseId }],
+    queryKey: ["courseProgress", { purchaseId }],
     queryFn: () => getLearningProgress({ purchaseId, courseId }),
     staleTime: 60,
     gcTime: 60,
@@ -13,8 +13,9 @@ const CourseProgress = ({ purchaseId, courseId }: { purchaseId: number; courseId
 
   if (isLoading) {
     return (
-      <div className="flex justify-center my-4">
-        <Loader2 className="animate-spin w-6 h-6" />
+      <div className="grid gap-2 mb-2">
+        <Skeleton className="h-4 w-[150px]" />
+        <Skeleton className="h-4 w-full" />
       </div>
     );
   }

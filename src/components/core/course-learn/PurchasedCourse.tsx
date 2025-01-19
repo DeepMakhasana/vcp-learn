@@ -8,9 +8,9 @@ import CourseProgress from "./CourseProgress";
 import { formateDateTime } from "@/lib/utils";
 
 const PurchasedCourse = ({ course }: { course: IPurchaseCoursesResponse }) => {
-  function getDaysBetweenDates(startDate: string, endDate: string): number {
+  function getDaysBetweenDates(endDate: string): number {
     // Parse the ISO strings into Date objects
-    const start = new Date(startDate);
+    const start = new Date();
     const end = new Date(endDate);
 
     // Calculate the difference in milliseconds
@@ -37,13 +37,13 @@ const PurchasedCourse = ({ course }: { course: IPurchaseCoursesResponse }) => {
           <h2 className="mb-2 text-lg font-medium">{course.course?.title}</h2>
           <p className="text-muted-foreground my-2 text-sm">Start Date: {formateDateTime(course.createdAt)}</p>
           {/* learning progress */}
-          <CourseProgress purchaseId={course?.id} courseId={course?.course?.id} />
+          <CourseProgress purchaseId={course?.order_id} courseId={course?.course?.id} />
           {/* remaining days */}
           <p className="mt-2 mb-4 line-clamp-4 text-sm text-muted-foreground">
-            <b>remaining:</b> {getDaysBetweenDates(`${course.createdAt}`, `${course.endAt}`)} Days
+            <b>remaining:</b> {getDaysBetweenDates(`${course.endAt}`)} Days
           </p>
           <div className="flex gap-2">
-            <Link to={`/dashboard/learn/${course.course.slug}/${course.id}`}>
+            <Link to={`/dashboard/learn/${course.course.slug}/${course.order_id}`}>
               <Button variant={"default"}>
                 <SlidersHorizontal />
                 Start Learning

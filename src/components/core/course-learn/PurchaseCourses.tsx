@@ -30,9 +30,9 @@ const PurchaseCourses = () => {
   return (
     <div className="grid gap-4">
       {data
-        ?.filter((course) => new Date(course.endAt as Date).getTime() > Date.now())
+        ?.filter((course) => new Date(course.endAt as Date).getTime() > Date.now() && course.status == "SUCCESS")
         .map((course) => (
-          <PurchasedCourse key={course.id} course={course} />
+          <PurchasedCourse key={course.order_id} course={course} />
         ))}
     </div>
   );

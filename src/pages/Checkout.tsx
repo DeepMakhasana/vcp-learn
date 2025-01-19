@@ -1,18 +1,22 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getCourseBySlug, purchaseCourse } from "@/api/course";
+import { getCourseBySlug, purchaseCourse, purchaseVerifyCourse } from "@/api/course";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import useAuthContext from "@/context/auth/useAuthContext";
-import { CourseCheckoutType, IPurchaseCoursePayload, IPurchaseCourseResponse } from "@/types/course";
+import { CourseCheckoutType, IPurchaseCoursePayload, IPurchaseVerifyCoursePayload } from "@/types/course";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import { courseImageBaseUrl } from "@/lib/constants";
 import NotFound from "./NotFound";
+import { useEffect, useState } from "react";
+import { loadRazorpayScript } from "@/lib/utils";
 
 const Checkout = () => {
   const { slug } = useParams();
+  const [paymentGatewayLoading, setPaymentGatewayLoading] = useState<boolean | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<boolean | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, user } = useAuthContext();
@@ -29,15 +33,37 @@ const Checkout = () => {
   });
 
   // mutation for checkout
-  const { mutate, isPending } = useMutation<IPurchaseCourseResponse, Error, IPurchaseCoursePayload>({
+  const { mutate, isPending } = useMutation<any, Error, IPurchaseCoursePayload>({
     mutationFn: purchaseCourse,
     onSuccess: (data) => {
-      if (data.userId == user?.id) {
-        toast({
-          title: "Success:",
-          description: "Course purchased successfully",
-        });
-        navigate("/dashboard");
+      console.log("order data", data);
+      handlePaymentVerify(data);
+    },
+    onError: (error: any) => {
+      console.log("error", error);
+      toast({
+        title: "warning:",
+        description: error?.response.data.message || error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // order verify
+  const { mutate: orderVerifyMutate, isPending: isOrderVerifyPending } = useMutation<
+    any,
+    Error,
+    IPurchaseVerifyCoursePayload
+  >({
+    mutationFn: purchaseVerifyCourse,
+    onSuccess: (data) => {
+      console.log("verify data", data);
+      if (data.status === "SUCCESS") {
+        setPaymentStatus(true);
+      } else {
+        alert(
+          "Fail payment try again, if amount is debit from your account then it will be refund in 5 to 6 working day."
+        );
       }
     },
     onError: (error: any) => {
@@ -49,6 +75,44 @@ const Checkout = () => {
       });
     },
   });
+
+  // handlePaymentVerify Function
+  const handlePaymentVerify = async (data: any) => {
+    setPaymentGatewayLoading(true);
+    const paymentScript = await loadRazorpayScript();
+    setPaymentGatewayLoading(false);
+
+    if (!paymentScript) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
+
+    const options = {
+      key: "rzp_test_gxKZu0qp1RcLv5",
+      amount: data.amount,
+      currency: data.currency,
+      name: course?.title,
+      description: "Test Mode",
+      order_id: data.id,
+      handler: async (response: any) => {
+        console.log("response", response);
+        orderVerifyMutate({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+          courseId: Number(course?.id),
+          userId: Number(user?.id),
+          price: Number(course?.price),
+          duration: Number(course?.duration),
+        });
+      },
+      theme: {
+        color: "#5f63b8",
+      },
+    };
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
+  };
 
   function handleCoursePurchase() {
     if (isAuthenticated) {
@@ -63,10 +127,17 @@ const Checkout = () => {
     }
   }
 
-  if (dataLoafing) {
+  useEffect(() => {
+    if (paymentStatus) {
+      navigate("/");
+    }
+  }, [paymentStatus, navigate]);
+
+  if (dataLoafing || isOrderVerifyPending || paymentGatewayLoading) {
     return (
-      <div className="flex justify-center my-4">
-        <Loader2 className="animate-spin w-6 h-6" />
+      <div className="flex gap-2 justify-center my-4">
+        <Loader2 className="animate-spin w-6 h-6" /> {paymentGatewayLoading && "Processing"}{" "}
+        {isOrderVerifyPending && "Verifying"}
       </div>
     );
   }

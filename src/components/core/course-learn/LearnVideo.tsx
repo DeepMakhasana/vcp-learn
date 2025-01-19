@@ -13,7 +13,7 @@ const LearnVideo = () => {
   const lessonId = Number(currentLesson?.id);
   const { data: videoData, isLoading: videoLoading } = useQuery<IPrivateVideoResponse, Error>({
     queryKey: ["video", { lessonId }],
-    queryFn: () => getPrivateVideoUrl({ purchaseId: Number(purchaseId), lessonId }),
+    queryFn: () => getPrivateVideoUrl({ purchaseId: String(purchaseId), lessonId }),
     enabled: !!slug && !!purchaseId && !!lessonId,
   });
 

@@ -28,8 +28,8 @@ const Layout = () => {
     isError,
     error,
   } = useQuery<ICourseLearnResponse, Error>({
-    queryKey: ["learn", { slug }],
-    queryFn: () => getPurchasedLearnCourse({ slag: String(slug), purchaseId: Number(purchaseId) }),
+    queryKey: ["learn", { slug, purchaseId }],
+    queryFn: () => getPurchasedLearnCourse({ slag: String(slug), purchaseId: String(purchaseId) }),
     enabled: !!slug && isAuthenticated && path.pathname.includes("/learn/") && !!purchaseId,
   });
 

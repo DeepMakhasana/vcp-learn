@@ -124,8 +124,19 @@ export interface IPurchaseCoursePayload {
   endAt?: Date;
 }
 
+export interface IPurchaseVerifyCoursePayload {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+  courseId: number;
+  userId: number;
+  price: number;
+  duration: number;
+}
+
 export interface IPurchaseCourseResponse extends IPurchaseCoursePayload {
-  id: number;
+  order_id: string;
+  status: string;
   createdAt: Date;
 }
 
@@ -142,7 +153,7 @@ export interface IPurchaseCoursesResponse extends IPurchaseCourseResponse {
 }
 
 export interface ICreateLessonProgressPayload {
-  purchaseId: number;
+  purchaseId: string;
   lessonId: number;
 }
 
@@ -154,7 +165,7 @@ export interface ICreateLessonProgressResponse {
 }
 
 export interface IPrivateResourcePayload {
-  purchaseId: number;
+  purchaseId: string;
   lessonId: number;
 }
 
@@ -168,7 +179,7 @@ export interface IPrivateTaskResponse {
 }
 
 export interface ICertificatePayload {
-  purchaseId: number;
+  purchaseId: string;
 }
 
 export interface ICertificateResponse {
