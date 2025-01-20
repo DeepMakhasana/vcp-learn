@@ -20,6 +20,6 @@ export const clientEndpoints = {
   },
 };
 
-export const CLIENT_ID = 5;
+export const CLIENT_ID = 1;
 // export const MAIN_COURSES_PAGE = "vcp-client.vercel.app";
 export const MAIN_COURSES_PAGE = "https://paramcadcenter.com/learn";
