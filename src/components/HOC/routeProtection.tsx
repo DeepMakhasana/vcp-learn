@@ -3,10 +3,7 @@ import { Loader2 } from "lucide-react";
 import { useLayoutEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const routeProtection = <P extends object>(
-  WrappedComponent: React.ComponentType<P>,
-  navigateToRegister?: boolean
-): React.FC<P> => {
+const routeProtection = <P extends object>(WrappedComponent: React.ComponentType<P>): React.FC<P> => {
   const ProtectedComponent = (props: P) => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -16,7 +13,7 @@ const routeProtection = <P extends object>(
 
     useLayoutEffect(() => {
       if (!isLoading && !isAuthenticated) {
-        navigate(navigateToRegister ? "/register" : "/");
+        navigate("/account");
       }
     }, [isAuthenticated, isLoading, navigate]);
 

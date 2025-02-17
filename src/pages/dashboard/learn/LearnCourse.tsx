@@ -101,6 +101,8 @@ const LearnCourse = () => {
   });
 
   const handleCertificateRequest = () => {
+    const currentId = currentLesson?.id;
+    nextMutate({ purchaseId: String(purchaseId), lessonId: Number(currentId) });
     certificateRequestMutation({ purchaseId: String(purchaseId) });
   };
 
@@ -151,7 +153,7 @@ const LearnCourse = () => {
               disabled={certificateRequestPending}
               onClick={handleCertificateRequest}
             >
-              {certificateRequestPending ? "Certificate requesting..." : "Complete"}
+              {certificateRequestPending || nextPending ? "Certificate requesting..." : "Complete"}
             </Button>
           )}
         </div>
